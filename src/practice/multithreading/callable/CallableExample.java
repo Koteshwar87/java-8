@@ -5,6 +5,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * For Callable its always preferrable to use ExecutorService
+ * Callable can take a generic type which will become the return type of call()
+ */
 public class CallableExample implements Callable<String> {
 
     private String message;
