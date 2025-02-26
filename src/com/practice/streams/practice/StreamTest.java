@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class TempStudent {
     public String name;
@@ -132,44 +133,49 @@ public class StreamTest {
         /*****************************************************
          Get student with exact match name "jayesh"
          *****************************************************/
-        Optional<Student> jayeshOpt = students.stream()
-                .filter(st -> st.getName().equals("Jayesh"))
+        students
+                .stream()
+                .filter((student) -> student.getName().equals("jayesh"))
                 .findFirst();
-        System.out.println(jayeshOpt.isPresent()?jayeshOpt.get().getName() : "Not present");
+
 
         /*****************************************************
          Get student with matching address "1235"
          *****************************************************/
-        Optional<Student> addr = students.stream()
-                .filter(student -> student.getAddress().getZipcode().equals("1235"))
+        students
+                .stream()
+                .filter(student -> student.getAddress().getZipcode().equals("12345"))
                 .findFirst();
-        System.out.println(addr.isPresent()?addr.get().getName() : "Not present");
 
         /*****************************************************
          Get all student having mobile numbers 3333.
          *****************************************************/
-        List<Student> matchNum = students.stream()
-                .filter(student -> student.getMobileNumbers().stream().anyMatch(mobileNumber -> mobileNumber.getNumber().equals("3333")))
+
+        List<Student> stud2 = students.stream()
+                .filter(student111 -> student111.getMobileNumbers().stream().anyMatch(x -> Objects.equals(x.getNumber(), "3333")))
                 .collect(Collectors.toList());
-        String numbMatch = matchNum.stream().map(student -> student.getName()).collect(Collectors.joining(",", "[", "]"));
-        System.out.println("Number match = " + numbMatch);
+
+        List<Student> collect = students
+                .stream()
+                .filter(student ->
+                        student.getMobileNumbers()
+                                .stream()
+                                .anyMatch(mobileNumber -> Objects.equals(mobileNumber.getNumber(), "3333"))
+                ).collect(Collectors.toList());
+        System.out.println("collect = " + collect);
 
         /*****************************************************
          Get all student having mobile number 1233 and 1234
          *****************************************************/
-        /*List<Student> studentsWithBothMobiles1233And1234 = students.stream()
-                .filter(student -> student.getMobileNumbers().stream()
-                        .allMatch(mobileNumber ->
-                                Objects.equals(mobileNumber.getNumber(), "1233") || Objects.equals(mobileNumber.getNumber(), "1234")))
-                .collect(Collectors.toList());*/
-        List<Student> studentsWithBothMobiles1233And1234 = students.stream()
-                .filter(student -> student.getMobileNumbers().stream()
-                        .anyMatch(mobileNumber -> Objects.equals(mobileNumber.getNumber(), "1233"))
-                        && student.getMobileNumbers().stream()
-                        .anyMatch(mobileNumber -> Objects.equals(mobileNumber.getNumber(), "1234")))
-                .collect(Collectors.toList());
-        String result4 = studentsWithBothMobiles1233And1234.stream().map(std -> std.getName()).collect(Collectors.joining(",", "[", "]"));
-        System.out.println(result4);
+        List<Student> collect1 = students
+                .stream()
+                .filter(student ->
+                        student.getMobileNumbers()
+                                .stream()
+                                .allMatch(mobileNumber -> Objects.equals(mobileNumber.getNumber(), "1233") || Objects.equals(mobileNumber.getNumber(), "1234"))
+                ).collect(Collectors.toList());
+        System.out.println("collect1 " + collect1);
+
 
         /*****************************************************
          Create a List<Student> from the List<TempStudent>
@@ -187,49 +193,59 @@ public class StreamTest {
                 Arrays.asList(new MobileNumber("11111"), new MobileNumber("33331"), new MobileNumber("12331")));
 
         List<TempStudent> tmpStudents = Arrays.asList(tmpStud1, tmpStud2);
-        List<Student> fromTempList = tmpStudents.stream()
+
+        List<Student> collect2 = tmpStudents
+                .stream()
                 .map(tempStudent -> new Student(tempStudent.name, tempStudent.age, tempStudent.address, tempStudent.mobileNumbers))
                 .collect(Collectors.toList());
+
 
         /*****************************************************
          Convert List<Student> to List<String> of student name
          *****************************************************/
-        List<String> namesList = students.stream()
+        List<String> collect3 = students
+                .stream()
                 .map(student -> student.getName())
                 .collect(Collectors.toList());
-
+        System.out.println(collect3.stream().collect(Collectors.joining(",")));
+        System.out.println(collect3.stream().collect(Collectors.joining(",", "[", "]")));
+        System.out.println("--------------------");
         /*****************************************************
          Convert List<students> to String
          *****************************************************/
-        String namesStr = students.stream()
-                .map(Student::getName)
-                .collect(Collectors.joining(",", "(", ")"));
-        System.out.println("names string = " + namesStr);
-
+        String collect4 = students
+                .stream()
+                .map(student -> student.getName())
+                .collect(Collectors.joining(",", "[", "]"));
+        System.out.println(collect4);
+        System.out.println("--------------------");
         /*****************************************************
          Change the case of List<String>
          *****************************************************/
         List<String> nameList =
                 Arrays.asList("Jayesh", "Dany", "Khyati", "Hello", "Mango");
-
-        nameList.stream()
-                .map(s -> s.toUpperCase())
-                .forEach(System.out::println);
+        List<String> collect5 = nameList
+                .stream()
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
+        System.out.println(collect5);
+        System.out.println("--------------------");
 
         /*****************************************************
          Sort List<String>
          *****************************************************/
-        System.out.println("Sorted list");
-        List<String> namesList2 =
+        List<String> namesList =
                 Arrays.asList("Jayesh", "Dany", "Khyati", "Hello", "Mango");
-        namesList2.stream()
+        namesList
+                .stream()
                 .sorted()
-                .forEach(System.out::print);
+                .forEach(System.out::println);
+        System.out.println("--------------------");
 
         /*****************************************************
          Conditionally apply Filter condition, say if flag is enabled then
          *****************************************************/
-        boolean sortConditionFlag = true;
+
 
     }
 }
